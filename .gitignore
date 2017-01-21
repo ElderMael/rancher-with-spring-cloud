@@ -1,0 +1,8 @@
+hosts/.vagrant
+hosts/dns.log
+hosts/ubuntu-xenial-16.04-cloudimg-console.log
+hosts/*.log
+.idea/
+.gradle/
+.iml
+*.iml

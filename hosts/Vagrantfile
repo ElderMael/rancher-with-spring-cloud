@@ -1,0 +1,57 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+
+  config.vm.define "rancher-server" do |server|
+    server.vm.box = "ubuntu/xenial64"
+
+    server.vm.network "forwarded_port", guest: 9090, host: 9090
+
+    server.vm.synced_folder "./data", "/vagrant"
+
+    server.vm.provider "virtualbox" do |vb|
+      vb.memory = "1024"
+    end
+
+    server.dns.tld = "dev"
+    server.vm.hostname = "rancher-server"
+    # server.vm.network "private_network", type: "dhcp"
+    server.vm.network "private_network", ip: "172.28.128.3"
+
+
+    server.vm.provision "shell", inline: <<-SHELL
+       apt-get update
+       apt-get install -y docker.io
+       service docker start
+       docker run -d --restart=unless-stopped -p 9090:8080 rancher/server
+    SHELL
+
+  end
+
+  config.vm.define "rancher-host" do |host|
+    host.vm.box = "ubuntu/xenial64"
+
+    host.vm.network "forwarded_port", guest: 8081, host: 8081
+
+    host.vm.synced_folder "./data", "/vagrant"
+
+    host.vm.provider "virtualbox" do |vb|
+      vb.memory = "4096"
+    end
+
+    host.dns.tld = "dev"
+    host.vm.hostname = "rancher-host"
+
+    host.vm.network "private_network", ip: "172.28.128.4"
+
+    host.vm.provision "shell", inline: <<-SHELL
+       apt-get update
+       apt-get install -y docker.io
+       service docker start
+    SHELL
+  end
+
+end
+
+VagrantDNS::Config.logger = Logger.new("dns.log")
