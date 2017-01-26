@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: api-gateway
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://service-registry.eureka:8761/eureka/

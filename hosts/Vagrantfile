@@ -52,6 +52,29 @@ Vagrant.configure("2") do |config|
     SHELL
   end
 
+  config.vm.define "rancher-host2" do |host|
+    host.vm.box = "ubuntu/xenial64"
+
+    host.vm.network "forwarded_port", guest: 8081, host: 8082
+
+    host.vm.synced_folder "./data", "/vagrant"
+
+    host.vm.provider "virtualbox" do |vb|
+      vb.memory = "4096"
+    end
+
+    host.dns.tld = "dev"
+    host.vm.hostname = "rancher-host2"
+
+    host.vm.network "private_network", ip: "172.28.128.5"
+
+    host.vm.provision "shell", inline: <<-SHELL
+       apt-get update
+       apt-get install -y docker.io
+       service docker start
+    SHELL
+  end
+
 end
 
 VagrantDNS::Config.logger = Logger.new("dns.log")

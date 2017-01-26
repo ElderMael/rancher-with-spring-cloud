@@ -1,0 +1,3 @@
+spring:
+  cloud:
+    config: http://service-registry.eureka/config/

@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: config-server
+server:
+  port: 8080
+config:
+  server:
+    native:
+      searchLocations:
+      - "classpath:config.yaml"

@@ -1,6 +1,6 @@
 spring:
   application:
-    name: midtier
+    name: data-api
 eureka:
   client:
     serviceUrl:

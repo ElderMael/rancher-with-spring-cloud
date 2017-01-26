@@ -6,3 +6,4 @@ hosts/*.log
 .gradle/
 .iml
 *.iml
+build/
