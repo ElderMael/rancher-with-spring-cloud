@@ -25,6 +25,34 @@ Vagrant.configure("2") do |config|
        apt-get install -y docker.io
        service docker start
        docker run -d --restart=unless-stopped -p 9090:8080 rancher/server
+       apt-get install -y httpie
+       apt-get install -y jq
+
+       export RANCHER_URL="http://localhost:9090/"
+
+       export RANCHER_KEY_RESPONSE=$(http --ignore-stdin --print b \
+        POST ${RANCHER_URL}v2-beta/apikey \
+        type=apikey accountId=1a1 name=roboto)
+
+       export RANCHER_ACCESS_KEY=$(echo $RANCHER_KEY_RESPONSE \
+        | jq --raw-output " . | .secretValue" )
+
+       export RANCHER_SECRET_KEY=$(echo $RANCHER_KEY_RESPONSE \
+        | jq --raw-output " . | .publicValue" )
+
+       echo "Generated Key: $RANCHER_SECRET_KEY and $RANCHER_ACCESS_KEY"
+
+       curl -o compose.tar.gz https://releases.rancher.com/compose/v0.12.1/rancher-compose-linux-amd64-v0.12.1.tar.gz
+
+       tar -zxvf compose.tar.gz ./rancher-compose-v0.12.1/rancher-compose -C .
+       cp ./rancher-compose-v0.12.1/rancher-compose /usr/bin/rancher-compose
+
+       chmod u+x /usr/bin/rancher-compose
+
+       rancher-compose --version
+
+       rancher-compose --verbose --file /vagrant/docker-compose.yml up
+
     SHELL
 
   end
@@ -76,5 +104,3 @@ Vagrant.configure("2") do |config|
   end
 
 end
-
-VagrantDNS::Config.logger = Logger.new("dns.log")

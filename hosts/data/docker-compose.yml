@@ -1,0 +1,26 @@
+version: '2'
+services:
+  service-registry:
+    image: eldermael/config-server
+    stdin_open: true
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+  service-registry:
+    image: eldermael/eureka-server
+    stdin_open: true
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+  midtier:
+    image: eldermael/midtier
+    stdin_open: true
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+  data-api:
+    image: eldermael/data-api
+    stdin_open: true
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
